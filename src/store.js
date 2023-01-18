@@ -34,7 +34,8 @@ export const store = {
         const eventObj = dayObj.events.find(
             (event) => event.details === eventDetails
         );
-        this.eventObj.edit = true;
+
+        eventObj.edit = true;
     },
     resetEditOfAllEvents() {
         this.state.data.map((dayObj) => {

@@ -9,14 +9,13 @@ const props = defineProps({
     day: Object,
     event: Object,
 });
-
 const emits = defineEmits(["editButton"]);
 
 let newEventDetails = "";
 
 const editEvent = (dayId, eventDetails) => {
-    emits("editButton", { dayId, eventDetails });
-    this.store.editEvent(e.dayId, e.eventDetails);
+    //emits("editButton", { dayId, eventDetails })
+    store.editEvent(dayId, eventDetails);
 };
 
 const updateEvent = (dayId, originalEventDetails, updatedEventDetails) => {
