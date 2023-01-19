@@ -1,24 +1,37 @@
 <script>
 import EventInput from "./EventInput.vue";
+import EventCount from "./EventCount.vue";
+// emitter is a global variable
+
 export default {
     name: "CustomEvent",
     props: [],
     data() {
         return {
-            notes: [],
-            timestamps: [],
             placeholder: "Enter a note",
         };
     },
-    components: {
-        EventInput,
-    },
-    methods: {
-        addNote(event) {
-            this.notes.push(event.note);
-            this.timestamps.push(event.timestamp);
+    computed: {
+        notes() {
+            return this.$store.getters.getNotes;
+        },
+        timestamps() {
+            return this.$store.getters.getTimestamps;
         },
     },
+    components: {
+        EventInput,
+        EventCount,
+    },
+    // created() {
+    //     this.emitter.on("add-note", (event) => this.addNote(event));
+    // },
+    // methods: {
+    //     addNote(event) {
+    //         this.notes.push(event.note);
+    //         this.timestamps.push(event.timestamp);
+    //     },
+    // },
 };
 </script>
 <template>
@@ -38,7 +51,10 @@ export default {
             </div>
         </div>
     </div>
-    <EventInput :placeholder="placeholder" @add-note="addNote" />
+    <EventInput :placeholder="placeholder" />
+    <div class="flex justify-center">
+        <EventCount />
+    </div>
 </template>
 
 <style scoped></style>

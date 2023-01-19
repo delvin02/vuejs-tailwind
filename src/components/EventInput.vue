@@ -20,9 +20,14 @@
             <span class="font-medium">Oh, snapp!</span> {{ errorMessage }}
         </p>
     </div>
+    <div class="my-2 flex justify-center"></div>
 </template>
 
 <script>
+import mitt from "mitt";
+
+const emitter = mitt();
+
 export default {
     name: "EventInput",
     props: ["placeholder"],
@@ -40,12 +45,19 @@ export default {
                     (this.error = true),
                     (this.errorMessage = "Please key in details")
                 );
-            // event emitter created to notify our instance
-            this.$emit("add-note", {
-                // refering back to the model input
-                note: this.input,
-                timestamp: new Date().toLocaleString(),
-            });
+            // emit event
+            // this.emitter.emit("add-note", {
+            //     // refering back to the model input
+            //     note: this.input,
+            //     timestamp: new Date().toLocaleString(),
+            // });
+
+            // Dispatch to state management (Action)
+            this.$store.dispatch("addNote", this.input);
+            this.$store.dispatch(
+                "addTimestamp",
+                new Date().toLocaleDateString()
+            );
             this.input = "";
             this.error = false;
         },
