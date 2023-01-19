@@ -54,10 +54,7 @@ export default {
 
             // Dispatch to state management (Action)
             this.$store.dispatch("addNote", this.input);
-            this.$store.dispatch(
-                "addTimestamp",
-                new Date().toLocaleDateString()
-            );
+            this.$store.dispatch("addTimestamp", new Date().toLocaleString());
             this.input = "";
             this.error = false;
         },

@@ -35,6 +35,11 @@ import HelloWorld from "./components/HelloWorld.vue";
                             <li>
                                 <RouterLink to="/event">Event</RouterLink>
                             </li>
+                            <li>
+                                <RouterLink to="/ecommerce"
+                                    >Ecommerce</RouterLink
+                                >
+                            </li>
                         </ul>
                     </nav>
                 </div>

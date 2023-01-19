@@ -27,6 +27,11 @@ const router = createRouter({
             name: "event",
             component: () => import("../views/CustomView.vue"),
         },
+        {
+            path: "/ecommerce",
+            name: "ecommerce",
+            component: () => import("../views/EcommerceView.vue"),
+        },
     ],
 });
 
