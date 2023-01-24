@@ -25,6 +25,8 @@
                 >
                     <button
                         class="inline-flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-50 hover:text-gray-700"
+                        @click="isColumn = true"
+                        :class="{ 'bg-slate-100': isColumn }"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -44,6 +46,8 @@
 
                     <button
                         class="inline-flex h-10 w-10 items-center justify-center text-gray-600 transition hover:bg-gray-50 hover:text-gray-700"
+                        @click="isColumn = false"
+                        :class="{ 'bg-slate-100': !isColumn }"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -78,9 +82,13 @@
                 </div>
             </div>
 
-            <ul class="mt-4 grid gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4">
+            <ul class="z-10 mt-4 grid gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4">
                 <li v-for="product in getProductItems" :key="product.id">
-                    <a href="#" class="group block overflow-hidden">
+                    <a
+                        href="#"
+                        class="group block overflow-hidden"
+                        v-if="isColumn"
+                    >
                         <img
                             src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
                             alt=""
@@ -90,7 +98,7 @@
                         <div class="relative bg-white pt-3">
                             <div class="flex justify-between">
                                 <h3
-                                    class="text-xs text-gray-700 group-hover:underline group-hover:underline-offset-4"
+                                    class="text-xs text-gray-700 hover:underline hover:underline-offset-4"
                                 >
                                     {{ product.title }}
                                 </h3>
@@ -107,11 +115,12 @@
                                 </span>
                             </p>
                         </div>
+                        <div class="inline-flex gap-2 rounded p-2">
+                            <button @click="addToLovedItems(product)">
+                                <LoveButton />
+                            </button>
+                        </div>
                     </a>
-                    <div class="inline-flex gap-2 rounded p-2">
-                        <Cart />
-                        <LoveButton />
-                    </div>
                 </li>
             </ul>
         </div>
@@ -122,12 +131,24 @@
 import { mapGetters } from "vuex";
 import Cart from "./Icon/Cart.vue";
 import LoveButton from "./Icon/LoveButton.vue";
+import axios from "axios";
+import { cartsURL } from "../url";
 
 export default {
     name: "ProductList",
+    data() {
+        return {
+            isColumn: true,
+        };
+    },
     components: {
         Cart,
         LoveButton,
+    },
+    methods: {
+        addToLovedItems(product) {
+            this.$store.dispatch("addCartItem",product);
+        },
     },
     computed: {
         ...mapGetters(["getProductItems"]),

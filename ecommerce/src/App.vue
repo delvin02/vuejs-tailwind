@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import Banner from "./components/Banner/Banner.vue";
-import { onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 onMounted(() => {
     const script = document.createElement("script");
 
@@ -10,6 +10,29 @@ onMounted(() => {
 
     document.body.appendChild(script);
 });
+
+const cartClick = ref(false);
+const toolbar = ref(false);
+</script>
+
+<script>
+export default {
+    name: "App",
+    created() {
+        console.log("hello");
+    },
+    computed: {
+        cart() {
+            return this.$store.getters.getCartItems;
+        },
+        getCartTotal() {
+            return this.$store.getters.getCartTotal;
+        },
+        getCartCount() {
+            return this.$store.getters.getCartCount;
+        },
+    },
+};
 </script>
 
 <template>
@@ -73,8 +96,25 @@ onMounted(() => {
                 >
                     <span>
                         <a
-                            href="/cart"
                             class="block border-b-4 border-transparent p-6 hover:border-indigo-700"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 512 512"
+                                class="h-4 w-4"
+                            >
+                                <path
+                                    d="M244 84L255.1 96L267.1 84.02C300.6 51.37 347 36.51 392.6 44.1C461.5 55.58 512 115.2 512 185.1V190.9C512 232.4 494.8 272.1 464.4 300.4L283.7 469.1C276.2 476.1 266.3 480 256 480C245.7 480 235.8 476.1 228.3 469.1L47.59 300.4C17.23 272.1 0 232.4 0 190.9V185.1C0 115.2 50.52 55.58 119.4 44.1C164.1 36.51 211.4 51.37 244 84C243.1 84 244 84.01 244 84L244 84zM255.1 163.9L210.1 117.1C188.4 96.28 157.6 86.4 127.3 91.44C81.55 99.07 48 138.7 48 185.1V190.9C48 219.1 59.71 246.1 80.34 265.3L256 429.3L431.7 265.3C452.3 246.1 464 219.1 464 190.9V185.1C464 138.7 430.4 99.07 384.7 91.44C354.4 86.4 323.6 96.28 301.9 117.1L255.1 163.9z"
+                                />
+                            </svg>
+
+                            <span class="sr-only"> Account </span>
+                        </a>
+                    </span>
+                    <span>
+                        <a
+                            class="block border-b-4 border-transparent p-6 hover:border-indigo-700"
+                            @click="cartClick = !cartClick"
                         >
                             <svg
                                 class="h-4 w-4"
@@ -93,6 +133,110 @@ onMounted(() => {
 
                             <span class="sr-only">Cart</span>
                         </a>
+                        <div
+                            class="absolute right-48 w-screen max-w-sm border border-gray-600 bg-gray-100 p-8 pt-4 transition-all"
+                            aria-modal="true"
+                            role="dialog"
+                            tabindex="-1"
+                            v-if="cartClick"
+                        >
+                            <button
+                                class="relative ml-auto -mr-4 block text-gray-600 transition hover:scale-110"
+                                @click="cartClick = !cartClick"
+                            >
+                                <span class="sr-only">Close cart</span>
+
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="h-5 w-5"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+
+                            <div class="z-20 mt-4 space-y-6">
+                                <ul class="space-y-4">
+                                    <li
+                                        class="flex items-center"
+                                        v-for="item in cart"
+                                        v-if="cart.length"
+                                    >
+                                        <img
+                                            src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
+                                            alt=""
+                                            class="h-16 w-16 rounded object-cover"
+                                        />
+
+                                        <div class="ml-4">
+                                            <h3 class="text-sm text-gray-900">
+                                                {{ item.title }}
+                                            </h3>
+
+                                            <dl
+                                                class="mt-0.5 space-y-px text-[10px] text-gray-600"
+                                            >
+                                                <div>
+                                                    <dt class="inline">
+                                                        Size:
+                                                    </dt>
+                                                    <dd class="inline">XXS</dd>
+                                                </div>
+
+                                                <div>
+                                                    <dt class="inline">
+                                                        Price:
+                                                    </dt>
+                                                    <dd class="inline">
+                                                        {{ item.price }}
+                                                    </dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </li>
+                                    <li v-else>
+                                        <div class="ml-0">
+                                            <h3
+                                                class="text-sm font-bold text-indigo-600"
+                                            >
+                                                No cart added.
+                                            </h3>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <div class="space-y-4 text-center">
+                                    <a
+                                        href="#"
+                                        class="block rounded border border-gray-600 px-5 py-3 text-sm text-gray-600 transition hover:ring-1 hover:ring-gray-400"
+                                    >
+                                        View my cart ({{ getCartCount }})
+                                    </a>
+
+                                    <a
+                                        href="#"
+                                        class="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
+                                    >
+                                        Checkout: Total ${{ getCartTotal }}
+                                    </a>
+
+                                    <a
+                                        href="#"
+                                        class="inline-block text-sm text-gray-500 underline underline-offset-4 transition hover:text-gray-600"
+                                        @click="cartClick = !cartClick"
+                                    >
+                                        Continue shopping
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </span>
 
                     <span>
@@ -152,7 +296,8 @@ onMounted(() => {
     <div data-dial-init class="group fixed right-6 bottom-6">
         <div
             id="speed-dial-menu-default"
-            class="mb-4 flex hidden flex-col items-center space-y-2"
+            class="mb-4 flex flex-col items-center space-y-2"
+            v-if="toolbar"
         >
             <button
                 type="button"
@@ -276,6 +421,7 @@ onMounted(() => {
             aria-controls="speed-dial-menu-default"
             aria-expanded="false"
             class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            @click="toolbar = !toolbar"
         >
             <svg
                 aria-hidden="true"
